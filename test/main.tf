@@ -31,8 +31,8 @@ resource "libvirt_volume" "nextcloud" {
 resource "libvirt_domain" "nextcloud" {
   provider  = libvirt.vmhost01
   name      = "nextcloud-${var.env}"
-  memory    = "512"
-  vcpu      = 1
+  memory    = "1024"
+  vcpu      = 2
   autostart = true
 
   // The MAC here is given an IP through mikrotik
