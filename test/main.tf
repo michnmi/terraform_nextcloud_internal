@@ -12,7 +12,6 @@ provider "libvirt" {
   alias = "vmhost01"
   uri   = "qemu+ssh://jenkins_automation@vmhost01/system?keyfile=../id_ed25519_jenkins"
   // uri   = "qemu+ssh://vmhost01/system"
-
 }
 
 variable "env" {
@@ -21,7 +20,7 @@ variable "env" {
 
 resource "libvirt_volume" "nextcloud" {
   provider         = libvirt.vmhost01
-  name             = "nextcloud-${var.env}.qcow2"
+  name             = "nextcloud_${var.env}.qcow2"
   pool             = var.env
   base_volume_name = "nextcloud_base.qcow2"
   format           = "qcow2"
@@ -30,16 +29,16 @@ resource "libvirt_volume" "nextcloud" {
 
 resource "libvirt_domain" "nextcloud" {
   provider  = libvirt.vmhost01
-  name      = "nextcloud-${var.env}"
+  name      = "nextcloud_${var.env}"
   memory    = "1024"
-  vcpu      = 2
+  vcpu      = 1
   autostart = true
 
   // The MAC here is given an IP through mikrotik
   network_interface {
     macvtap  = "enp0s25"
     mac      = "52:54:00:EA:17:58"
-    hostname = "nextcloud-${var.env}"
+    hostname = "nextcloud_${var.env}"
   }
 
   network_interface {
