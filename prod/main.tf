@@ -10,8 +10,8 @@ terraform {
 
 provider "libvirt" {
   alias = "vmhost01"
-  uri   = "qemu+ssh://jenkins_automation@vmhost01/system?keyfile=../id_ed25519_jenkins"
-  // uri   = "qemu+ssh://vmhost01/system"
+  // uri   = "qemu+ssh://jenkins_automation@vmhost01/system?keyfile=../id_ed25519_jenkins"
+  uri   = "qemu+ssh://vmhost01/system"
 }
 
 variable "env" {
@@ -30,14 +30,14 @@ resource "libvirt_volume" "nextcloud" {
 resource "libvirt_domain" "nextcloud" {
   provider  = libvirt.vmhost01
   name      = "nextcloud_${var.env}"
-  memory    = "512"
-  vcpu      = 1
+  memory    = "2048"
+  vcpu      = 2
   autostart = true
 
   // The MAC here is given an IP through mikrotik
   network_interface {
     macvtap  = "enp0s25"
-    mac      = "52:54:00:EA:17:58"
+    mac      = "52:54:00:EA:18:58"
     hostname = "nextcloud_${var.env}"
   }
 
