@@ -30,7 +30,7 @@ resource "libvirt_volume" "nextcloud" {
 resource "libvirt_domain" "nextcloud" {
   provider  = libvirt.vmhost01
   name      = "nextcloud_${var.env}"
-  memory    = "2048"
+  memory    = "1664"
   vcpu      = 2
   autostart = true
 
