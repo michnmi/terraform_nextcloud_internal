@@ -3,7 +3,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.2"
+      version = "~>0.6"
     }
   }
 }
@@ -11,34 +11,47 @@ terraform {
 provider "libvirt" {
   alias = "vmhost01"
   uri   = "qemu+ssh://jenkins_automation@vmhost01/system?keyfile=../id_ed25519_jenkins"
-  // uri   = "qemu+ssh://vmhost01/system"
+  # uri   = "qemu+ssh://vmhost01/system"
+}
+
+provider "libvirt" {
+  alias = "vmhost02"
+  uri   = "qemu+ssh://jenkins_automation@vmhost02/system?keyfile=../id_ed25519_jenkins"
+  # uri   = "qemu+ssh://vmhost02/system"
+}
+
+provider "libvirt" {
+  alias = "vmhost03"
+  uri   = "qemu+ssh://jenkins_automation@vmhost03/system?keyfile=../id_ed25519_jenkins"
+  # uri   = "qemu+ssh://vmhost03/system"
 }
 
 variable "env" {
   type = string
 }
 
+
 resource "libvirt_volume" "nextcloud" {
-  provider         = libvirt.vmhost01
-  name             = "nextcloud_${var.env}.qcow2"
+  provider         = libvirt.vmhost03
+  name             = "nextcloud-${var.env}.qcow2"
   pool             = var.env
-  base_volume_name = "nextcloud_base.qcow2"
+  base_volume_name = "nextcloud-base.qcow2"
   format           = "qcow2"
   base_volume_pool = var.env
 }
 
 resource "libvirt_domain" "nextcloud" {
-  provider  = libvirt.vmhost01
-  name      = "nextcloud_${var.env}"
-  memory    = "1664"
-  vcpu      = 2
+  provider  = libvirt.vmhost03
+  name      = "nextcloud-${var.env}"
+  memory    = "8192"
+  vcpu      = 4
   autostart = true
 
   // The MAC here is given an IP through mikrotik
   network_interface {
-    macvtap  = "enp0s25"
+    macvtap  = "enp1s0"
     mac      = "52:54:00:EA:18:58"
-    hostname = "nextcloud_${var.env}"
+    hostname = "nextcloud-${var.env}"
   }
 
   network_interface {
